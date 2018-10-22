@@ -1,0 +1,149 @@
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8"/>
+	<title>cwp-07</title>
+	<link rel="stylesheet" href="fonts.google.css"/>
+	<link rel="stylesheet" href="site.css"/>
+	<script type="text/javascript" src="index.js"></script>
+	<script>
+		var x;
+		function load_articles(obj, page) {
+			if (page === null) page = $('#cur_page').val();
+			if (obj !== null) page = parseInt(obj.innerText);
+			// $("#result").html("");
+			$.ajax({
+				type: "POST",
+				url: "../api/articles/readall",
+				data: JSON.stringify({
+					"includeDeps": true,
+					"sortField": "date",
+					"sortOrder": $('#dropSortOrder :selected').text(),			
+					"page": page,
+					"limit": 5	
+				}),
+				success: function(response) {
+					var res = "";
+					var page = response.meta.page;
+					var pages = response.meta.pages;
+					$("#cur_page").html(page);
+					if (page > 1) {
+						$("#nav_first").html("1");
+						$("#nav_prev").html(page-1);
+						if (!(page - 1 == 1)) $("#l_nav_first").css("display", "block");
+						else $("#l_nav_first").css("display", "none");
+						$("#l_nav_prev").css("display", "block");
+					} else {
+						$("#l_nav_first").css("display", "none");
+						$("#l_nav_prev").css("display", "none");
+					}
+
+					if (page < pages) {
+						$("#nav_last").html(pages);
+						$("#nav_next").html(page+1);
+						if (!(page + 1 == pages)) $("#l_nav_last").css("display", "block");
+						else $("#l_nav_last").css("display", "none");
+						$("#l_nav_next").css("display", "block");
+					} else {
+						$("#l_nav_last").css("display", "none");
+						$("#l_nav_next").css("display", "none");
+					}
+
+					for (var i in response.items) {
+						var itm = response.items[i];
+
+						var date = new Date(itm.date * 1000);
+						var hours = date.getHours();
+						var minutes = "0" + date.getMinutes();
+						var seconds = "0" + date.getSeconds();
+						var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+
+						var comment_count = (itm.comments === undefined) ? 0 : itm.comments.length;
+
+						res += "<div class='col-xs-12' id='blog' style='margin-top: 50px;'><article class='post hentry post-inner'><div class='meta-data'><time class='meta-data__date'>"+formattedTime+"</time><span class='meta-data__author'>"+itm.author+"</span><span class='meta-data__comments'><a href='#'>"+comment_count+" comments</a></span></div><h2 class='hentry__title'>"+itm.title+"</h2><div class='hentry__content'><p></p><p><span>"+itm.text+"</span></p></div><div class='clearfix'></div></article></div>";
+					}
+					$("#result").html(res);
+					//res = JSON.parse(response);
+					//alert(response);	
+				},
+				error: function (error) {
+				    alert("Error = "+error);	
+				}
+			});
+		}
+	</script>
+</head>
+<body class="home page">
+	<div class="boxed-container">
+		<div class="top">
+			<div class="container">
+				<div class="row">
+					<div class="col-xs-12 col-md-6">
+						<div class="top__left"><a href='./form.html'>CWP-07</a></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="master-container" style="margin-bottom: 60px;">
+			<div class="container">
+				<div class="row">
+					<main class="col-xs-12  col-md-9" role="main">
+						<div class="row">
+							<div style="margin: 25px;">
+								<span>sortOrder</span>
+								<div>	
+									<select id='dropSortOrder' size="3">
+										<option value="desc">desc</option>
+										<option selected value="asc">asc</option>
+									</select>
+								</div>
+								<br>
+								<span>sortField</span>
+								<div>	
+									<select id='dropSortField' size="3">
+										<option value="id">id</option>
+										<option selected value="date">date</option>
+										<option value="title">title</option>
+										<option value="text">text</option>
+										<option value="author">author</option>
+									</select>
+								</div>
+								<br>
+								<button onclick="load_articles(null, null); ">LOAD</button>
+							</div>
+							<!-- CONTAINER -->
+							<div id="result">	
+							</div>		
+
+							<div class="col-xs-12">
+								<nav class='pagination text-center'>
+									<ul class='page-numbers'>
+										<li id="l_nav_first"><a class='prev page-numbers' href='#' id="nav_first" onclick="load_articles(this)"></a></li>
+										<li id="l_nav_prev"><a class='page-numbers' href='#' id="nav_prev" onclick="load_articles(this)"></a></li>
+										<li><span class='page-numbers current' id="cur_page"></span></li>
+										<li id="l_nav_next"><a class='page-numbers' href='#' id="nav_next" onclick="load_articles(this)"></a></li>
+										<li id="l_nav_last"><a class='next page-numbers' href='#' id="nav_last" onclick="load_articles(this)"></a></li>
+									</ul>
+								</nav>
+							</div>
+						</div>
+					</main>
+				</div>
+			</div>
+		</div>
+		<footer>
+			<div class="footer-bottom">
+				<div class="container">
+					<div class="footer-bottom__left">CWP-07<a href="#" target="_blank"></a>	
+					</div>
+					<div class="footer-bottom__right">
+						&copy; 2018 <strong>mixershpixer </strong>. All rights reserved.	
+					</div>
+				</div>
+			</div>
+		</footer>
+	</div>
+</body>
+<script>
+	load_articles(null, 1);
+</script>
+</html>

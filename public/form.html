@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8"/>
+	<title>CWP-07</title>
+	<link rel="stylesheet" href="site.css"/>
+	<script type="text/javascript" src="index.js"></script>
+	<script>
+		function save() {
+			$.ajax({
+				type: "POST",
+				url: "../api/articles/create",
+				data: JSON.stringify({
+					"title": $("#title").val(),
+					"text": $("#text").val(),
+					"date": Math.floor(Date.now() / 1000),
+					"author": $("#author").val(),			
+					"comments": []
+				}),
+				success: function(response) {
+					alert("Ok");
+				},
+				error: function (error) {
+				    alert("Error = "+error);
+				}
+			});
+		}
+	</script>
+</head>
+<body class="home page">
+	<div class="boxed-container">
+		<div class="top">
+			<div class="container">
+				<div class="row">
+					<div class="col-xs-12 col-md-6">
+						<div class="top__left"><a href='./'>CWP-07</a></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="master-container" style="margin-bottom: 60px;">
+			<div class="container">
+				<div class="row">
+					<main class="col-xs-12  col-md-9" role="main">
+						<div class="row">
+							<!-- CONTAINER -->
+							<div class="container mlogin">
+								<div id="login">
+								<h1>Добавить статью</h1>
+								<form action="" id="loginform" method="post"name="loginform">
+									<p><label>Автор<br>
+									<input class="input" id="author" size="20" type="text" value=""></label></p>
+
+									<p><label>Заголовок<br>
+									<input class="input" id="title" size="20" type="text" value=""></label></p>
+
+									<p><label>Текст статьи<br>
+									<textarea class="input" id="text" type="text" value=""></textarea></label></p>
+
+									<p class="submit"><input class="button" name="login" type= "button" value="Добавить" onclick="save()"></p>
+								</form>
+								</div>
+							</div>	
+						</div>
+					</main>
+				</div>
+			</div>
+		</div>
+		<footer>
+			<div class="footer-bottom">
+				<div class="container">
+					<div class="footer-bottom__left">CWP-07<a href="#" target="_blank"></a>	
+					</div>
+					<div class="footer-bottom__right">
+						&copy; 2018 <strong>WrestCreator </strong>. Права защищены.	
+					</div>
+				</div>
+			</div>
+		</footer>
+	</div>
+</body>
+</html>
